@@ -2,21 +2,21 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#1f2937" />
     <meta name="description" content="Speedcubing Scorecard - Calcula tu promedio de tiempos offline" />
-    <link rel="manifest" href="/manifest.json" />
-    <title>Speedcubing Scorecard</title>
-    <script type="module" crossorigin src="/assets/index-DAgSDQSq.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D3M3lW-O.css">
+    <link rel="manifest" href="./manifest.json" />
+    <title>Calculadora de ao5</title>
+    <script type="module" crossorigin src="/calculadora-ao5/assets/index-DAgSDQSq.js"></script>
+    <link rel="stylesheet" crossorigin href="/calculadora-ao5/assets/index-D3M3lW-O.css">
   </head>
   <body class="bg-gray-900 text-gray-100">
     <div id="root"></div>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
+          navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker registration failed:', err))
         })
       }
