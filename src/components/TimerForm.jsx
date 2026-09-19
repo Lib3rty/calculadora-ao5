@@ -8,13 +8,14 @@ export default function TimerForm({
   onCalculate,
   loading = false
 }) {
-  const allComplete = areAllTimesComplete(times)
+  const allComplete = areAllTimesComplete(times, times.length)
 
   const handleReset = () => {
-    const emptyTimes = Array(5).fill(null).map(() => ({
+    const emptyTimes = Array(times.length).fill(null).map(() => ({
       minutes: '',
       seconds: '',
-      milliseconds: ''
+      milliseconds: '',
+      isDNF: false
     }))
     times.forEach((_, idx) => onTimeChange(idx, emptyTimes[idx]))
   }
@@ -23,7 +24,7 @@ export default function TimerForm({
     <div className="w-full max-w-md mx-auto">
       <div className="bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
         <h2 className="text-2xl font-bold text-white mb-6 text-center">
-          Ingresa tus 5 Tiempos
+          Ingresa tus {times.length} Tiempos
         </h2>
 
         <div className="space-y-4">
@@ -47,7 +48,7 @@ export default function TimerForm({
                 : 'bg-gray-600 text-gray-400 cursor-not-allowed'
             }`}
           >
-            {loading ? 'Calculando...' : 'Calcular Promedio'}
+            {loading ? 'Calculando...' : 'Calcular'}
           </button>
 
           <button
@@ -66,8 +67,8 @@ export default function TimerForm({
         <div className="mt-4 p-3 bg-gray-700 rounded text-center text-sm text-gray-300">
           <p>
             {!allComplete 
-              ? `Falta ingresar ${5 - times.filter(t => 
-                  t.minutes !== '' && t.seconds !== '' && t.milliseconds !== ''
+              ? `Falta ingresar ${times.length - times.filter(t => 
+                  t.isDNF || (t.minutes !== '' && t.seconds !== '' && t.milliseconds !== '')
                 ).length} tiempo(s)`
               : '✓ Todos los tiempos ingresados'}
           </p>

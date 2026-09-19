@@ -11,10 +11,10 @@ export default function TimeInput({
 
   // Sincronizar cuando se reinicia desde el padre
   useEffect(() => {
-    if (time.minutes === '' && time.seconds === '' && time.milliseconds === '') {
+    if (time.minutes === '' && time.seconds === '' && time.milliseconds === '' && !time.isDNF) {
       setRawValue('')
     }
-  }, [time.minutes, time.seconds, time.milliseconds])
+  }, [time.minutes, time.seconds, time.milliseconds, time.isDNF])
 
   const handleChange = (e) => {
     const inputVal = e.target.value
@@ -43,7 +43,17 @@ export default function TimeInput({
     const s = padded.slice(2, 4)
     const ms = padded.slice(4, 6)
 
-    onChange(index, { minutes: m, seconds: s, milliseconds: ms })
+    onChange(index, { minutes: m, seconds: s, milliseconds: ms, isDNF: false })
+  }
+
+  const toggleDNF = () => {
+    if (time.isDNF) {
+      onChange(index, { minutes: '', seconds: '', milliseconds: '', isDNF: false })
+      setRawValue('')
+    } else {
+      onChange(index, { minutes: '', seconds: '', milliseconds: '', isDNF: true })
+      setRawValue('')
+    }
   }
 
   const formatDisplay = (raw) => {
@@ -63,9 +73,9 @@ export default function TimeInput({
     }
   }
 
-  const displayValue = formatDisplay(rawValue)
-  const isTimeEmpty = rawValue === ''
-  const isValid = isTimeEmpty || isValidTime(time.minutes, time.seconds, time.milliseconds)
+  const displayValue = time.isDNF ? 'DNF' : formatDisplay(rawValue)
+  const isTimeEmpty = rawValue === '' && !time.isDNF
+  const isValid = time.isDNF || isTimeEmpty || isValidTime(time.minutes, time.seconds, time.milliseconds)
 
   return (
     <div className="mb-4">
@@ -73,19 +83,35 @@ export default function TimeInput({
         Tiempo {index + 1}
       </label>
       <div className="flex flex-col">
-        <input
-          type="text"
-          inputMode="numeric"
-          value={displayValue}
-          onChange={handleChange}
-          placeholder="0.00"
-          className={`w-full px-4 py-3 rounded-lg text-center font-mono text-2xl font-bold bg-gray-800 border-2 transition-colors ${
-            !isValid
-              ? 'border-red-500 text-red-400 focus:border-red-500' 
-              : 'border-gray-700 text-white focus:border-blue-500 focus:outline-none'
-          }`}
-        />
-        {!isValid && !isTimeEmpty && (
+        <div className="flex gap-2">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={displayValue}
+            onChange={handleChange}
+            disabled={time.isDNF}
+            placeholder="0.00"
+            className={`w-full px-4 py-3 rounded-lg text-center font-mono text-2xl font-bold bg-gray-800 border-2 transition-colors ${
+              !isValid
+                ? 'border-red-500 text-red-400 focus:border-red-500' 
+                : time.isDNF 
+                  ? 'border-red-600 text-red-500 bg-gray-900 cursor-not-allowed opacity-80'
+                  : 'border-gray-700 text-white focus:border-blue-500 focus:outline-none'
+            }`}
+          />
+          <button
+            type="button"
+            onClick={toggleDNF}
+            className={`px-4 rounded-lg font-bold border-2 transition-colors flex-shrink-0 ${
+              time.isDNF 
+                ? 'bg-red-600 border-red-500 text-white' 
+                : 'bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+          >
+            DNF
+          </button>
+        </div>
+        {!isValid && !isTimeEmpty && !time.isDNF && (
           <span className="text-xs text-red-400 text-center mt-1">Formato inválido (Ej: segundos no pueden ser &gt; 59)</span>
         )}
       </div>
